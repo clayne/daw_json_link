@@ -8,7 +8,21 @@
 
 #pragma once
 
-#if defined( __cpp_lib_concepts )
+#include <daw/daw_cpp_feature_check.h>
+
+/// Disable concepts on gcc < 13.3.
+/// See https://github.com/beached/daw_json_link/issues/454
+#if DAW_HAS_GCC_VER_LT( 13, 3 )
+#define DAW_JSON_DONT_USE_CONCEPTS
+#endif
+
+#if not defined( DAW_JSON_DONT_USE_CONCEPTS ) and defined( __cpp_lib_concepts )
+#if __cpp_lib_concepts >= 202002L
+#define DAW_JSON_USE_CONCEPTS
+#endif
+#endif
+
+#if defined( DAW_JSON_USE_CONCEPTS )
 #define DAW_JSON_MAKE_REQ_TRAIT( Name, /*ReqExpression*/... ) \
 	template<typename T>                                        \
 	inline constexpr bool Name = requires {                     \
@@ -23,7 +37,7 @@
 	inline constexpr bool Name<T, std::void_t<decltype( __VA_ARGS__ )>> = true
 #endif
 
-#if defined( __cpp_lib_concepts )
+#if defined( DAW_JSON_USE_CONCEPTS )
 #define DAW_JSON_MAKE_REQ_TRAIT2( Name, /*ReqExpression*/... ) \
 	template<typename T, typename U>                             \
 	inline constexpr bool Name = requires {                      \
@@ -39,7 +53,7 @@
 	  true
 #endif
 
-#if defined( __cpp_lib_concepts )
+#if defined( DAW_JSON_USE_CONCEPTS )
 #define DAW_JSON_MAKE_REQ_TRAIT2( Name, /*ReqExpression*/... ) \
 	template<typename T, typename U>                             \
 	inline constexpr bool Name = requires {                      \
@@ -55,7 +69,7 @@
 	  true
 #endif
 
-#if defined( __cpp_lib_concepts )
+#if defined( DAW_JSON_USE_CONCEPTS )
 #define DAW_JSON_MAKE_REQ_TRAIT3( Name, /*ReqExpression*/... ) \
 	template<typename T, typename U, typename V>                 \
 	inline constexpr bool Name = requires {                      \
@@ -71,7 +85,7 @@
 	  true
 #endif
 
-#if defined( __cpp_lib_concepts )
+#if defined( DAW_JSON_USE_CONCEPTS )
 #define DAW_JSON_MAKE_REQ_TYPE_ALIAS_TRAIT_NT( Name, /*MemberTypeAlias*/... ) \
 	template<typename T, typename = void>                                       \
 	inline constexpr bool Name = requires {                                     \
@@ -86,7 +100,7 @@
 	inline constexpr bool Name<T, std::void_t<__VA_ARGS__>> = true
 #endif
 
-#if defined( __cpp_lib_concepts )
+#if defined( DAW_JSON_USE_CONCEPTS )
 #define DAW_JSON_MAKE_REQ_TYPE_ALIAS_TRAIT( Name, /*MemberTypeAlias*/... ) \
 	template<typename T, typename = void>                                    \
 	inline constexpr bool Name = requires {                                  \
@@ -101,7 +115,7 @@
 	inline constexpr bool Name<T, std::void_t<typename __VA_ARGS__>> = true
 #endif
 
-#if defined( __cpp_lib_concepts )
+#if defined( DAW_JSON_USE_CONCEPTS )
 #define DAW_JSON_MAKE_REQ_TYPE_ALIAS_TRAIT2( Name, /*MemberTypeAlias*/... ) \
 	template<typename T, typename U>                                          \
 	inline constexpr bool Name = requires {                                   \
