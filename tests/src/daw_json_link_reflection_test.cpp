@@ -14,15 +14,14 @@
 #include <map>
 #include <memory>
 #include <optional>
+#include <utility>
 
 using daw::json::reflect;
 
 struct[[= reflect]] X {
-	[[= reflect.map_as<daw::json::json_number<"member1", int>>]]
-	int m1;
+	[[= reflect.map_as<daw::json::json_number<"member1", int>>]] int m1;
 
-	[[= reflect.rename( "member2" )]]
-	int m2;
+	[[= reflect.rename( "member2" )]] int m2;
 };
 
 struct[[= reflect]] Y {
@@ -76,18 +75,14 @@ struct daw::json::json_data_contract<NoRefl> {
 	}
 };
 
-enum class EFoo {
-	AChoo,
-	BlessYou
-};
+enum class EFoo { AChoo, BlessYou };
 
-struct [[=reflect]] EnumMember {
+struct[[= reflect]] EnumMember {
 	EFoo foo;
 };
 
-struct [[=reflect]] EnumMemberString {
-	[[=reflect.enum_string]]
-	EFoo foo;
+struct[[= reflect]] EnumMemberString {
+	[[= reflect.enum_string]] EFoo foo;
 };
 
 int main( ) {
@@ -182,14 +177,15 @@ int main( ) {
 	auto const val7_json = daw::json::to_json( afoo1 );
 	daw::println( "EnumMember{{ EFoo::BlessYou }}; as json: {}", val7_json );
 
-	static constexpr auto achoo = daw::json::refl_details::enum_to_string( EFoo::AChoo );
+	static constexpr auto achoo =
+	  daw::json::refl_details::enum_to_string( EFoo::AChoo );
 	static_assert( achoo == "AChoo" );
-	
+
 	auto bfoo0 = EnumMemberString{ EFoo::AChoo };
 	auto bfoo1 = EnumMemberString{ EFoo::BlessYou };
 	auto const val8_json = daw::json::to_json( bfoo0 );
 	daw::println( "EnumMemberString{{ EFoo::AChoo }}; as json: {}", val8_json );
 	auto const val9_json = daw::json::to_json( bfoo1 );
-	daw::println( "EnumMemberString{{ EFoo::BlessYou }}; as json: {}", val9_json );
-	
+	daw::println( "EnumMemberString{{ EFoo::BlessYou }}; as json: {}",
+	              val9_json );
 }
