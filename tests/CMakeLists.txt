@@ -249,7 +249,7 @@ if( Boost_FOUND )
 
 	add_executable( daw_json_link_describe_bin src/daw_json_link_describe_test.cpp )
 	target_link_libraries( daw_json_link_describe_bin PRIVATE json_test Boost::headers )
-	target_compile_features( daw_json_link_describe_bin INTERFACE cxx_std_20 )
+	target_compile_features( daw_json_link_describe_bin PRIVATE cxx_std_20 )
 	add_test( NAME daw_json_link_describe_test COMMAND daw_json_link_describe_bin )
 endif()
 
@@ -602,7 +602,7 @@ add_dependencies( full cookbook_numbers2_test )
 
 if( Boost_FOUND AND DAW_USE_EXCEPTIONS )
 	add_executable( cookbook_numbers3_test src/cookbook_numbers3_test.cpp )
-	target_link_libraries( cookbook_numbers3_test json_test Boost::headers )
+	target_link_libraries( cookbook_numbers3_test PRIVATE test Boost::headers )
 	add_test( NAME cookbook_numbers3_test COMMAND cookbook_numbers3_test ./cookbook_numbers3.json WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/test_data/" )
 	add_dependencies( ci_tests cookbook_numbers3_test )
 	add_dependencies( full cookbook_numbers3_test )
