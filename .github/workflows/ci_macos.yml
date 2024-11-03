@@ -38,7 +38,6 @@ jobs:
       - name: Create Build
         run: |
           mkdir build
-          brew install ninja boost
       - name: Build Dependencies
         env:
           CXX: ${{ matrix.toolset }}
