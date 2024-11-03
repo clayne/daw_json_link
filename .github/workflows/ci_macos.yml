@@ -37,7 +37,8 @@ jobs:
       - uses: actions/checkout@v1
       - name: Create Build
         run: |
-          mkdir build
+          mkdir build && \
+          brew install ninja 
       - name: Build Dependencies
         env:
           CXX: ${{ matrix.toolset }}
