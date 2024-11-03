@@ -18,9 +18,45 @@
 #include <utility>
 #include <vector>
 
-namespace daw::json {
-	inline namespace DAW_JSON_VER {
+#define DAW_REFL( ... ) ^^__VA_ARGS__
+#define DAW_SPLICE( ... ) [:__VA_ARGS__:]
+
+namespace daw::json::inline DAW_JSON_VER {
+	inline namespace experimental {
+		template<typename E, json_options_t Options = json_custom_opts_def>
+		requires std::is_enum_v<E> struct enum_string;
+
+		struct refl_map_as {
+			std::meta::info type;
+		};
+
+		struct refl_rename {
+			char const *name;
+		};
+
+		struct refl_enum_string {
+			json_options_t Options;
+		};
+
+		struct refl_ignore_with_default {};
+
+		template<typename T>
+		struct refl_ignore_with_value {
+			T value;
+		};
+
 		namespace refl_details {
+			template<auto... vals>
+			struct replicator_type {
+				template<typename F>
+				constexpr void operator>>( F body ) const {
+					( body.template operator( )<vals>( ), ... );
+				}
+			};
+
+			template<auto... vals>
+			replicator_type<vals...> replicator = { };
+
 			/// Get the public non-static data members
 			consteval std::vector<std::meta::info>
 			pub_nsdm_of( std::meta::info type_class ) {
@@ -31,19 +67,52 @@ namespace daw::json {
 				return members;
 			}
 
-			template<typename T, std::size_t... Is>
-			consteval auto to_tuple( T const &value, std::index_sequence<Is...> )
-			  -> decltype( std::tuple( value.[:pub_nsdm_of( ^T )[Is]:]... ) ) {
-
-				return std::tuple( value.[:pub_nsdm_of( ^T )[Is]:]... );
+			template<typename R>
+			consteval auto expand( R range ) {
+				auto args = std::vector<std::meta::info>( );
+				for( auto r : range ) {
+					args.push_back( std::meta::reflect_value( r ) );
+				}
+				return std::meta::substitute( DAW_REFL( replicator ), args );
 			}
 
 			template<typename T>
-			consteval auto to_tuple( T const &value )
-			  -> decltype( refl_details::to_tuple(
-			    value, std::make_index_sequence<pub_nsdm_of( ^T ).size( )>{ } ) ) {
+			consteval std::optional<T> get_annotaion( std::meta::info r ) {
+				for( std::meta::info a : std::meta::annotations_of( r ) ) {
+					if( std::meta::type_of( a ) == DAW_REFL( T ) ) {
+						return std::meta::extract<T>( a );
+					}
+				}
+				return std::nullopt;
+			}
+
+			template<typename T>
+			consteval bool has_annotation( std::meta::info r, T const &value ) {
+				auto expected = std::meta::reflect_value( value );
+				for( std::meta::info a : std::meta::annotations_of( r ) ) {
+					if( value_of( a ) == expected ) {
+						return true;
+					}
+				}
+				return false;
+			}
+
+			template<typename T, std::size_t... Is>
+			consteval auto to_tuple( T const &value, std::index_sequence<Is...> )
+			  -> decltype( std::tuple(
+			    value.DAW_SPLICE( pub_nsdm_of( DAW_REFL( T ) )[Is] )... ) ) {
+				return std::tuple(
+				  value.DAW_SPLICE( pub_nsdm_of( DAW_REFL( T ) )[Is] )... );
+			}
+
+			template<typename T>
+			consteval auto
+			to_tuple( T const &value ) -> decltype( refl_details::to_tuple(
+			  value,
+			  std::make_index_sequence<pub_nsdm_of( DAW_REFL( T ) ).size( )>{ } ) ) {
 				return refl_details::to_tuple(
-				  value, std::make_index_sequence<pub_nsdm_of( ^T ).size( )>{ } );
+				  value,
+				  std::make_index_sequence<pub_nsdm_of( DAW_REFL( T ) ).size( )>{ } );
 			}
 
 			template<JSONNAMETYPE Name, typename T>
@@ -57,14 +126,54 @@ namespace daw::json {
 
 			template<typename T, std::size_t Idx>
 			consteval auto get_member_link_func( ) {
-				constexpr auto name =
-				  std::meta::identifier_of( pub_nsdm_of( ^T )[Idx] );
-				static_assert( not name.empty( ) );
+				static constexpr auto member_info = pub_nsdm_of( DAW_REFL( T ) )[Idx];
+				static constexpr auto annot_rename =
+				  get_annotaion<daw::json::refl_rename>( member_info );
 
-				return daw::traits::identity<deduce_t<
-				  json_name<name.size( ) + 1>(
-				    name.data( ), std::make_index_sequence<name.size( ) + 1>{ } ),
-				  submember_type_t<T, Idx>>>{ };
+				static constexpr std::string_view name =
+				  annot_rename ? std::string_view( annot_rename->name )
+				               : std::meta::identifier_of( member_info );
+				static_assert( not name.empty( ), "Unexpected empty name" );
+
+				static constexpr auto annot_map_as = [] {
+					static constexpr auto refl_map_as_annot =
+					  get_annotaion<refl_map_as>( member_info );
+					static constexpr auto refl_enum_string_annot =
+					  get_annotaion<refl_enum_string>( member_info );
+					if constexpr( refl_map_as_annot ) {
+						static_assert( not refl_enum_string_annot,
+						               "Do not use reflect.enum_string and reflect.map_as "
+						               "at the same time" );
+						return refl_map_as_annot;
+					} else if constexpr( refl_enum_string_annot ) {
+						using json_member_no_name =
+						  daw::json::enum_string<DAW_SPLICE(
+						                           std::meta::type_of( member_info ) ),
+						                         refl_enum_string_annot->Options>;
+						static constexpr auto info =
+						  DAW_REFL( typename json_member_no_name::template with_name<
+						            json_name<name.size( ) + 1>(
+						              name.data( ),
+						              std::make_index_sequence<name.size( ) + 1>{ } )> );
+						return std::optional<refl_map_as>{ refl_map_as{ info } };
+					} else {
+						return false;
+					}
+				}( );
+
+				if constexpr( annot_map_as ) {
+					static_assert(
+					  not annot_rename,
+					  "Do not use reflect.rename and reflect.map_as at the same time" );
+					static constexpr auto result =
+					  daw::traits::identity<DAW_SPLICE( annot_map_as->type )>{ };
+					return result;
+				} else {
+					return daw::traits::identity<deduce_t<
+					  json_name<name.size( ) + 1>(
+					    name.data( ), std::make_index_sequence<name.size( ) + 1>{ } ),
+					  submember_type_t<T, Idx>>>{ };
+				}
 			}
 
 			template<typename T, std::size_t Idx>
@@ -97,76 +206,103 @@ namespace daw::json {
 
 				DAW_ATTRIB_INLINE static constexpr auto to_json_data( T const &value ) {
 					return daw::forward_nonrvalue_as_tuple(
-					  value.[:pub_nsdm_of( ^T )[Is]:]... );
+					  value.DAW_SPLICE( pub_nsdm_of( DAW_REFL( T ) )[Is] )... );
+				}
+			};
+
+			template<typename E>
+			requires std::is_enum_v<E> constexpr E
+			enum_from_string( std::string_view name ) {
+				template for( constexpr auto enumerator :
+				              std::meta::enumerators_of( DAW_REFL( E ) ) ) {
+					if( name == std::meta::identifier_of( enumerator ) ) {
+						return DAW_SPLICE( enumerator );
+					}
+				}
+				daw_json_error( ErrorReason::InvalidString );
+			}
+
+			/*
+			template<typename E>
+			  requires std::is_enum_v<E>
+			constexpr std::string_view enum_to_string( E value ) {
+			  template for( constexpr auto enumerator: std::meta::enumerators_of(
+			DAW_REFL( E ) ) ) { if( value == DAW_SPLICE( enumerator ) ) { return
+			std::meta::identifier_of( enumerator );
+			    }
+			  }
+			  return std::string_view{ };
+			}
+			*/
+			template<typename E>
+			requires std::is_enum_v<E> constexpr std::string_view
+			enum_to_string( E value ) {
+				auto result = std::string_view{ };
+				DAW_SPLICE( expand( std::meta::enumerators_of( DAW_REFL( E ) ) ) ) >>
+				  [&]<auto e> {
+					  if( value == DAW_SPLICE( e ) ) {
+						  result = std::meta::identifier_of( e );
+					  }
+				  };
+				return result;
+			}
+
+			template<typename E>
+			requires std::is_enum_v<E> struct reflect_enum_as_string {
+				static constexpr E operator( )( std::string_view name ) {
+					return enum_from_string<E>( name );
+				}
+
+				static constexpr std::string_view operator( )( E value ) {
+					return enum_to_string( value );
 				}
 			};
 		} // namespace refl_details
-		template<refl_details::Reflectable T>
-		inline constexpr bool is_reflectible_type_v = not requires {
-			typename daw::json::json_data_contract<T>::type;
-		}
-		and not requires( T v ) {
-			/* ADL to_tuple is used for unmapped mappings */
-			to_tuple( v );
-		}
-		and not json_details::is_string_v<T> and not concepts::is_container_v<T> and
-		  not daw::traits::is_container_like_v<T> and
-		  not is_a_basic_json_value<T> and not is_nonesuch_v<T> and
-		  not concepts::is_nullable_value_v<T>;
 
-		template<refl_details::Reflectable T>
-		requires( requires { typename T::i_am_a_json_type; } ) //
-		  inline constexpr bool is_reflectible_type_v<T> = false;
+		template<typename E, json_options_t Options>
+		requires std::is_enum_v<E> struct enum_string
+		  : json_custom_no_name<E, refl_details::reflect_enum_as_string<E>,
+		                        refl_details::reflect_enum_as_string<E>, Options> {
+		};
 
-		template<refl_details::Reflectable T>
-		requires( requires { typename T::i_am_a_json_member_list; } ) //
-		  inline constexpr bool is_reflectible_type_v<T> = false;
+		inline constexpr struct reflect_t {
+			static consteval refl_rename rename( char const *name ) {
+				return refl_rename{ name };
+			}
 
-		template<refl_details::Reflectable T>
-		requires( requires { typename T::i_am_a_json_deduced_ordered_class; } ) //
-		  inline constexpr bool is_reflectible_type_v<T> = false;
+			template<typename JsonMember>
+			static constexpr auto map_as = refl_map_as{ DAW_REFL( JsonMember ) };
 
-		template<refl_details::Reflectable T>
-		requires( requires { typename T::i_am_a_json_map_alias; } ) //
-		  inline constexpr bool is_reflectible_type_v<T> = false;
+			static constexpr auto ignore_with_default =
+			  daw::json::refl_ignore_with_default{ };
 
-		template<refl_details::Reflectable T>
-		requires( requires { typename T::i_am_a_deduced_empty_class; } ) //
-		  inline constexpr bool is_reflectible_type_v<T> = false;
+			template<typename T>
+			static consteval auto ignore_with_value( T &&v ) {
+				return refl_ignore_with_value{ DAW_FWD( v ) };
+			}
 
-		template<refl_details::Reflectable T>
-		requires( requires { typename T::i_am_a_json_nullable; } ) //
-		  inline constexpr bool is_reflectible_type_v<T> = false;
+			template<json_options_t Options>
+			static constexpr auto enum_string_with_opt =
+			  daw::json::refl_enum_string{ Options };
 
-		template<refl_details::Reflectable T>
-		requires( requires { typename T::i_am_a_tagged_variant; } ) //
-		  inline constexpr bool is_reflectible_type_v<T> = false;
+			static constexpr auto enum_string =
+			  enum_string_with_opt<json_custom_opts_def>;
+		} reflect{ };
 
+		// Trait that specifies a type is to be reflected on for parse info
 		template<refl_details::Reflectable T>
-		requires( requires { typename T::i_am_a_json_tuple_member_list; } ) //
-		  inline constexpr bool is_reflectible_type_v<T> = false;
+		inline constexpr bool is_reflectible_type_v =
+		  refl_details::has_annotation( DAW_REFL( T ), reflect );
+	} // namespace experimental
 
-		template<refl_details::Reflectable T>
-		requires( requires { typename T::i_am_a_serialization_policy; } ) //
-		  inline constexpr bool is_reflectible_type_v<T> = false;
+	template<typename T>
+	requires is_reflectible_type_v<T> //
+	  struct json_data_contract<T>
+	  : refl_details::make_data_contract<
+	      T, std::make_index_sequence<
+	           refl_details::pub_nsdm_of( DAW_REFL( T ) ).size( )>> {};
 
-		template<refl_details::Reflectable T>
-		requires( requires { typename T::i_am_a_submember_tagged_variant; } ) //
-		  inline constexpr bool is_reflectible_type_v<T> = false;
+} // namespace daw::json::inline DAW_JSON_VER
 
-		template<refl_details::Reflectable T>
-		requires( requires { typename T::i_am_an_ordered_member; } ) //
-		  inline constexpr bool is_reflectible_type_v<T> = false;
-
-		template<refl_details::Reflectable T>
-		requires( requires { typename T::i_am_a_parse_policy; } ) //
-		  inline constexpr bool is_reflectible_type_v<T> = false;
-
-		template<typename T>
-		requires is_reflectible_type_v<T> //
-		  struct json_data_contract<T>
-		  : refl_details::make_data_contract<
-		      T,
-		      std::make_index_sequence<refl_details::pub_nsdm_of( ^T ).size( )>> {};
-	} // namespace DAW_JSON_VER
-} // namespace daw::json
+#undef DAW_REFL
+#undef DAW_SPLICE
