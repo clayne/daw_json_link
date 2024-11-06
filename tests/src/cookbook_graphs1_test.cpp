@@ -108,7 +108,7 @@ int main( int argc, char **argv )
 		puts( "Must supply path to cookbook_graphs1.json file\n" );
 		exit( EXIT_FAILURE );
 	}
-	auto data = *daw::read_file( argv[1] );
+	auto data = daw::read_file( argv[1] ).value( );
 	std::string_view json_sv = std::string_view( data.data( ), data.size( ) );
 
 	daw::graph_t<Node> g{ };

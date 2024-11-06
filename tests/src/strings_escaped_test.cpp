@@ -107,7 +107,7 @@ int main( int argc, char **argv )
 		exit( EXIT_FAILURE );
 	}
 	std::string const json_string = [argv] {
-		auto const data = *daw::read_file( argv[1] );
+		auto const data = daw::read_file( argv[1] ).value( );
 		return std::string( data.data( ), data.size( ) );
 	}( );
 	auto const h0 =

@@ -173,8 +173,7 @@ int main( int argc, char **argv ) {
 		          << " json_in.json [json_out.json] [--verbose]\n";
 		exit( EXIT_FAILURE );
 	}
-	auto data =
-	  daw::read_file( args[0].value, daw::terminate_on_read_file_error );
+	auto data = daw::read_file( std::string( args[0].value ) ).value( );
 
 #if defined( DAW_USE_EXCEPTIONS )
 	try
@@ -182,9 +181,8 @@ int main( int argc, char **argv ) {
 	{
 		if( args.size( ) > 1 and args[1].name.empty( ) ) {
 			test_assert( data.size( ) > 0, "Invalid JSON document" );
-			auto ofile =
-			  std::ofstream( static_cast<std::string>( args[1].value ).c_str( ),
-			                 std::ios::trunc | std::ios::binary );
+			auto ofile = std::ofstream( std::string( args[1].value ),
+			                            std::ios::trunc | std::ios::binary );
 			test_assert( ofile, "Unable to output file" );
 			minify( args, data, std::ostreambuf_iterator<char>( ofile ) );
 		} else {

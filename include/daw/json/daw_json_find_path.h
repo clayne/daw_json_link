@@ -89,16 +89,19 @@ namespace daw::json {
 		/// Convert a json_path_node stack to a JSON Path string
 		/// \param path_stack A vector with json_path_nodes representing the path
 		/// in the JSON document tree \return A string in JSON Path format
-		[[nodiscard]] inline std::string
+		[[nodiscard]] DAW_ATTRIB_NOINLINE inline std::string
 		to_json_path_string( std::vector<json_path_node> const &path_stack ) {
 			return daw::algorithm::accumulate(
 			  std::data( path_stack ), daw::data_end( path_stack ), std::string{ },
 			  []( auto &&state, json_path_node const &sv )
 			    DAW_JSON_CPP23_STATIC_CALL_OP {
 				    if( sv.index( ) >= 0 ) {
-					    state += "[" + std::to_string( sv.index( ) ) + "]";
+					    state += '[';
+					    state += std::to_string( sv.index( ) );
+					    state += ']';
 				    } else if( not sv.name( ).empty( ) ) {
-					    state += "." + static_cast<std::string>( sv.name( ) );
+					    state += '.';
+					    state += std::string( sv.name( ) );
 				    }
 				    return DAW_FWD( state );
 			    } );

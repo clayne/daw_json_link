@@ -8,6 +8,7 @@
 
 #include "defines.h"
 
+#include <daw/daw_read_file.h>
 #include <daw/json/daw_json_link.h>
 #include <daw/json/daw_json_value_state.h>
 
@@ -17,17 +18,8 @@
 #include <string_view>
 #include <unistd.h>
 
-std::string read_file( std::string const &filename ) {
-	std::ifstream f( filename );
-	if( !f ) {
-		return { };
-	}
-	return std::string( std::istreambuf_iterator<char>( f ),
-	                    std::istreambuf_iterator<char>( ) );
-}
-
 int main( int, char ** ) {
-	std::string const json_text = read_file( "/tmp/1.json" );
+	std::string const json_text = daw::read_file( "/tmp/1.json" ).value( );
 
 	double x = 0;
 	double y = 0;

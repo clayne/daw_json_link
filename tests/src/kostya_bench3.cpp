@@ -58,7 +58,8 @@ coordinate_t calc( std::string const &text ) {
 	std::size_t len = 0;
 
 	using namespace daw::json;
-	using range_t = json_array_range<coordinate_t, options::CheckedParseMode::yes>;
+	using range_t =
+	  json_array_range<coordinate_t, options::CheckedParseMode::yes>;
 	auto rng = range_t( text, "coordinates" );
 	auto f = rng.begin( );
 	auto l = rng.end( );
@@ -83,8 +84,7 @@ int main( ) {
 		exit( EXIT_FAILURE );
 	}
 
-	std::string const text =
-	  daw::read_file( "/tmp/1.json", daw::terminate_on_read_file_error );
+	auto const text = daw::read_file( "/tmp/1.json" ).value( );
 
 	std::cout << calc( text ) << '\n';
 }

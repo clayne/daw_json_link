@@ -90,7 +90,7 @@ int main( int argc, char **argv )
 		exit( 1 );
 	}
 
-	auto const json_data1 = *daw::read_file( argv[1] );
+	auto const json_data1 = daw::read_file( argv[1] ).value( );
 	auto const json_sv1 =
 	  std::string_view( json_data1.data( ), json_data1.size( ) );
 

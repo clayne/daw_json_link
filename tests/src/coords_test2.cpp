@@ -76,7 +76,7 @@ int main( int argc, char **argv )
 		std::cerr << "Must supply a filename to open\n";
 		exit( 1 );
 	}
-	auto const json_data = *daw::read_file( argv[1] );
+	auto const json_data = daw::read_file( argv[1] ).value( );
 	auto json_sv = std::string_view( json_data.data( ), json_data.size( ) );
 
 	using iterator_t = daw::json::json_array_iterator<coordinate_t>;

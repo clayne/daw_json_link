@@ -91,7 +91,7 @@ int main( int argc, char **argv )
 		puts( "Must supply path to cookbook_class2.json file\n" );
 		exit( EXIT_FAILURE );
 	}
-	auto data = *daw::read_file( argv[1] );
+	auto data = daw::read_file( argv[1] ).value( );
 
 	auto const cls = daw::json::from_json<daw::cookbook_class3::MyClass3>(
 	  std::string_view( data.data( ), data.size( ) ) );

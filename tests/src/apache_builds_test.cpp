@@ -106,7 +106,7 @@ int main( int argc, char **argv )
 		std::cerr << "Must supply a path to apache_builds.json\n";
 		exit( 1 );
 	}
-	auto const json_data1 = *daw::read_file( argv[1] );
+	auto const json_data1 = daw::read_file( argv[1] ).value( );
 	test_assert( json_data1.size( ) > 2, "Minimum json data size is 2 '{}'" );
 
 	std::cout << "Using " << daw::json::constexpr_exec_tag::name

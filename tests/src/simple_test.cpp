@@ -65,7 +65,7 @@ int main( int argc, char **argv )
 		std::cerr << "Must supply a filename to open\n";
 		exit( 1 );
 	}
-	auto json_data = daw::read_file( argv[1], daw::terminate_on_read_file_error );
+	auto json_data = daw::read_file( argv[1] ).value( );
 	auto sz = json_data.size( );
 	json_data.append( 60ULL,
 	                  ' ' ); // Account for max digits in float if in bad form

@@ -189,7 +189,7 @@ int main( int argc, char **argv ) {
 		std::cerr << argv[0] << " json_in.json\n";
 		exit( EXIT_FAILURE );
 	}
-	auto data = daw::read_file( argv[1], daw::terminate_on_read_file_error );
+	auto data = daw::read_file( argv[1] ).value;
 	return LLVMFuzzerTestOneInput(
 	  reinterpret_cast<std::uint8_t const *>( data.data( ) ), data.size( ) );
 }

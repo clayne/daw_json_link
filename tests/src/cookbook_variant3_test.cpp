@@ -79,7 +79,7 @@ int main( int argc, char **argv )
 		puts( "Must supply path to cookbook_variant3.json file\n" );
 		exit( EXIT_FAILURE );
 	}
-	auto data = *daw::read_file( argv[1] );
+	auto data = daw::read_file( argv[1] ).value( );
 	auto json_data = std::string_view( data.data( ), data.size( ) );
 
 	std::vector<daw::cookbook_variant3::MyClass> values1 =

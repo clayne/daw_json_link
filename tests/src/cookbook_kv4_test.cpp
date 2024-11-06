@@ -29,7 +29,7 @@ int main( int argc, char **argv )
 		puts( "Must supply path to cookbook_kv4.json file\n" );
 		exit( EXIT_FAILURE );
 	}
-	auto json_data = *daw::read_file( argv[1] );
+	auto json_data = daw::read_file( argv[1] ).value( );
 
 	using namespace daw::json;
 	auto val = json_value( json_data );

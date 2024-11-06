@@ -29,7 +29,7 @@ int main( int argc, char **argv )
 		  "Must supply path to cookbook_parsing_individual_members1.json file\n" );
 		exit( EXIT_FAILURE );
 	}
-	auto const json_data = *daw::read_file( argv[1] );
+	auto const json_data = daw::read_file( argv[1] ).value( );
 
 	using namespace daw::json;
 	auto const b_value = from_json<std::string_view>( json_data, "member2.b" );

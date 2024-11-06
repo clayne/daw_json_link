@@ -37,6 +37,7 @@ namespace daw::json {
 					using CharT = typename ParseState::CharT;
 					// SIMD here was much slower, most JSON has very minimal whitespace
 					CharT *first = parse_state.first;
+					daw_json_assert_weak( first, ErrorReason::Unknown );
 					CharT *const last = parse_state.last;
 
 					// only used when not zero terminated string and gcc9 warns

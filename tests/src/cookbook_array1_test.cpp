@@ -30,7 +30,7 @@ int main( int argc, char **argv )
 		puts( "Must supply path to cookbook_array1.json file\n" );
 		exit( EXIT_FAILURE );
 	}
-	auto const data = *daw::read_file( argv[1] );
+	auto const data = daw::read_file( argv[1] ).value( );
 
 	using namespace daw::json;
 

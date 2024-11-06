@@ -73,7 +73,7 @@ int main( int argc, char **argv )
 		exit( 1 );
 	}
 
-	auto const mm_numbers = *daw::read_file( argv[1] );
+	auto const mm_numbers = daw::read_file( argv[1] ).value( );
 	auto const sv_numbers =
 	  std::string_view( mm_numbers.data( ), mm_numbers.size( ) );
 

@@ -126,7 +126,7 @@ int main( int argc, char **argv )
 		return true;
 	}( );
 
-	auto const json_data1 = *daw::read_file( argv[1] );
+	auto const json_data1 = daw::read_file( argv[1] ).value( );
 	assert( json_data1.size( ) > 2 and "Minimum json data size is 2 '{}'" );
 
 	auto const sz = json_data1.size( );

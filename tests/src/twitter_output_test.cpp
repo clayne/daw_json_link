@@ -42,7 +42,7 @@ int main( int argc, char **argv )
 	}
 
 	std::string const json_data = [argv] {
-		auto const mmf = *daw::read_file( argv[1] );
+		auto const mmf = daw::read_file( argv[1] ).value( );
 		test_assert( mmf.size( ) > 2, "Minimum json data size is 2 '{}'" );
 		return std::string( mmf.data( ), mmf.size( ) );
 	}( );

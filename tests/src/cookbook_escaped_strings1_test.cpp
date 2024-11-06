@@ -58,7 +58,7 @@ int main( int argc, char **argv )
 	  { "example.com", "Bücher.ch", "happy.cn", "happy快乐.cn", "快乐.cn",
 	    "happy.中国", "快乐.中国", "www.ハンドボールサムズ.com", "🦄.com" } };
 
-	auto data = *daw::read_file( argv[1] );
+	auto data = daw::read_file( argv[1] ).value( );
 
 	auto const cls =
 	  daw::json::from_json<daw::cookbook_escaped_strings1::WebData>(
