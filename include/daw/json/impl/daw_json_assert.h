@@ -66,7 +66,8 @@ namespace daw::json {
 		namespace json_details {
 			[[noreturn]] DAW_ATTRIB_NOINLINE inline void
 			handle_error( json_exception &&jex ) {
-				daw_json_error_handler.get( )( std::move( jex ), daw_json_error_handler_data );
+				daw_json_error_handler.get( )( std::move( jex ),
+				                               daw_json_error_handler_data );
 				DAW_UNREACHABLE( );
 			}
 		} // namespace json_details
@@ -127,10 +128,8 @@ namespace daw::json {
 				}( );
 				json_details::handle_error( json_exception(
 				  reason, std::string_view( location.class_first, len ) ) );
-			} else {
-				json_details::handle_error( json_exception( reason ) );
 			}
-			DAW_UNREACHABLE( );
+			json_details::handle_error( json_exception( reason ) );
 		}
 
 		template<typename ParseState>
