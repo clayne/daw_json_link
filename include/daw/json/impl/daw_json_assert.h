@@ -74,7 +74,6 @@ namespace daw::json {
 		[[noreturn]] DAW_ATTRIB_NOINLINE inline void
 		daw_json_error( ErrorReason reason ) {
 			json_details::handle_error( json_exception( reason ) );
-			DAW_UNREACHABLE( );
 		}
 
 		template<typename ParseState>
@@ -88,19 +87,16 @@ namespace daw::json {
 				  json_exception( reason, location.class_first ) );
 			}
 			json_details::handle_error( json_exception( reason ) );
-			DAW_UNREACHABLE( );
 		}
 
 		[[noreturn]] DAW_ATTRIB_NOINLINE inline void
 		daw_json_error( json_details::missing_member reason ) {
 			json_details::handle_error( json_exception( reason ) );
-			DAW_UNREACHABLE( );
 		}
 
 		[[noreturn]] DAW_ATTRIB_NOINLINE inline void
 		daw_json_error( json_details::missing_token reason ) {
 			json_details::handle_error( json_exception( reason ) );
-			DAW_UNREACHABLE( );
 		}
 
 		template<typename ParseState>
@@ -149,7 +145,6 @@ namespace daw::json {
 				  json_exception( reason, location.class_first ) );
 			}
 			json_details::handle_error( json_exception( reason ) );
-			DAW_UNREACHABLE( );
 		}
 	} // namespace DAW_JSON_VER
 } // namespace daw::json
