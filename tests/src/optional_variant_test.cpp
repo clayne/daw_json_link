@@ -60,7 +60,7 @@ int main( int argc, char **argv )
 		puts( "Must supply path to optional_variant.json file\n" );
 		exit( EXIT_FAILURE );
 	}
-	auto data = *daw::read_file( argv[1] );
+	auto data = daw::read_file( argv[1] ).value( );
 	puts( "Original" );
 	puts( data.c_str( ) );
 	auto stuff =

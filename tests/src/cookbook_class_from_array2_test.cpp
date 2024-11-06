@@ -54,7 +54,7 @@ int main( int argc, char **argv )
 		puts( "Must supply path to cookbook_class_from_array2.json file\n" );
 		exit( EXIT_FAILURE );
 	}
-	auto data = *daw::read_file( argv[1] );
+	auto data = daw::read_file( argv[1] ).value( );
 	puts( "Original\n" );
 	puts( data.data( ) );
 

@@ -35,7 +35,7 @@ int main( int argc, char **argv )
 		exit( 1 );
 	}
 
-	std::string const json_data1 = *daw::read_file( argv[1] );
+	std::string const json_data1 = daw::read_file( argv[1] ).value( );
 	assert( json_data1.size( ) > 2 and "Minimum json data size is 2 '{}'" );
 
 	auto const sz = json_data1.size( );

@@ -31,7 +31,7 @@ int main( int argc, char **argv )
 		exit( 1 );
 	}
 	using namespace daw::json;
-	auto json_data = std::string( *daw::read_file( argv[1] ) );
+	auto json_data = std::string( daw::read_file( argv[1] ).value( ) );
 #if defined( DAW_USE_EXCEPTIONS )
 	try {
 #endif

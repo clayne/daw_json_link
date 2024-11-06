@@ -522,14 +522,14 @@ int main( int argc, char **argv )
 		             "citm_catalog.json, and canada.json\n";
 		exit( 1 );
 	}
-	auto const json_data_apache = *daw::read_file( argv[1] );
+	auto const json_data_apache = daw::read_file( argv[1] ).value( );
 	assert( json_data_apache.size( ) > 2 and "Minimum json data size is 2 '{}'" );
-	auto const json_data_twitter = *daw::read_file( argv[2] );
+	auto const json_data_twitter = daw::read_file( argv[2] ).value( );
 	assert( json_data_twitter.size( ) > 2 and
 	        "Minimum json data size is 2 '{}'" );
-	auto const json_data_citm = *daw::read_file( argv[3] );
+	auto const json_data_citm = daw::read_file( argv[3] ).value( );
 	assert( json_data_citm.size( ) > 2 and "Minimum json data size is 2 '{}'" );
-	auto const json_data_canada = *daw::read_file( argv[4] );
+	auto const json_data_canada = daw::read_file( argv[4] ).value( );
 	assert( json_data_canada.size( ) > 2 and "Minimum json data size is 2 '{}'" );
 
 	auto const results = std::vector<daw::bench::bench_result>{
@@ -558,7 +558,7 @@ int main( int argc, char **argv )
 	std::string out_data{ };
 	{
 
-		auto const json_data_results_file = *daw::read_file( argv[5] );
+		auto const json_data_results_file = daw::read_file( argv[5] ).value( );
 		auto old_results = [&]( ) -> std::vector<daw::bench::bench_result> {
 			if( json_data_results_file.size( ) < 2U ) {
 				return { };

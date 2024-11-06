@@ -35,7 +35,7 @@ int main( int argc, char **argv )
 	}( );
 	using namespace daw::json;
 	std::string const json_data = [argv] {
-		auto const mmf = *daw::read_file( argv[1] );
+		auto const mmf = daw::read_file( argv[1] ).value( );
 		return std::string( mmf.data( ), mmf.size( ) );
 	}( );
 

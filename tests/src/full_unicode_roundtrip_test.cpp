@@ -146,8 +146,8 @@ int main( int argc, char **argv )
 		exit( 1 );
 	}
 
-	auto const json_str = *daw::read_file( argv[1] );
-	auto const json_str_escaped = *daw::read_file( argv[2] );
+	auto const json_str = daw::read_file( argv[1] ).value( );
+	auto const json_str_escaped = daw::read_file( argv[2] ).value( );
 
 	test<options::ExecModeTypes::compile_time>( json_str, json_str_escaped );
 	test<options::ExecModeTypes::runtime>( json_str, json_str_escaped );

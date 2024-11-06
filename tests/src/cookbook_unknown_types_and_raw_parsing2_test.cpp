@@ -92,7 +92,7 @@ int main( int argc, char **argv )
 		  "file\n" );
 		exit( EXIT_FAILURE );
 	}
-	auto data = *daw::read_file( argv[1] );
+	auto data = daw::read_file( argv[1] ).value( );
 
 	auto const val = daw::json::from_json<MyClass2>( data );
 

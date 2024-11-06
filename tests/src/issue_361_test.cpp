@@ -55,7 +55,7 @@ int main( int argc, char **argv )
 		puts( "Must supply path to cookbook_kv1b.json file\n" );
 		exit( EXIT_FAILURE );
 	}
-	auto json_doc = *daw::read_file( argv[1] );
+	auto json_doc = daw::read_file( argv[1] ).value( );
 
 	auto kv = daw::json::from_json<daw::cookbook_kv1b::MyKeyValue1>( json_doc );
 

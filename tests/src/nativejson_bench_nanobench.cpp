@@ -113,9 +113,9 @@ int main( int argc, char **argv ) {
 	            .warmup( 100 )
 	            .minEpochIterations( 100 );
 
-	std::string const twitter_doc = *daw::read_file( argv[1] );
-	std::string const citm_doc = *daw::read_file( argv[2] );
-	std::string const canada_doc = *daw::read_file( argv[3] );
+	std::string const twitter_doc = daw::read_file( argv[1] ).value( );
+	std::string const citm_doc = daw::read_file( argv[2] ).value( );
+	std::string const canada_doc = daw::read_file( argv[3] ).value( );
 
 	bench<constexpr_checked_pol>( b1, "constexpr checked", twitter_doc, citm_doc,
 	                              canada_doc );

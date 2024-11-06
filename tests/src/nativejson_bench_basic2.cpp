@@ -41,9 +41,9 @@ int main( int argc, char **argv )
 		exit( 1 );
 	}
 
-	auto const mm_twitter = *daw::read_file( argv[1] );
-	auto const mm_citm = *daw::read_file( argv[2] );
-	auto const mm_canada = *daw::read_file( argv[3] );
+	auto const mm_twitter = daw::read_file( argv[1] ).value( );
+	auto const mm_citm = daw::read_file( argv[2] ).value( );
+	auto const mm_canada = daw::read_file( argv[3] ).value( );
 	auto const sv_twitter =
 	  std::string_view( mm_twitter.data( ), mm_twitter.size( ) );
 	auto const sv_citm = std::string_view( mm_citm.data( ), mm_citm.size( ) );

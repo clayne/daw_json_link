@@ -60,7 +60,7 @@ int main( int argc, char **argv )
 		std::cout << "Must supply path to test_stateful_json_value.json file\n";
 		exit( EXIT_FAILURE );
 	}
-	auto const json_data = *daw::read_file( argv[1] );
+	auto const json_data = daw::read_file( argv[1] ).value( );
 	auto coords = calc( json_data );
 	daw::do_not_optimize( coords );
 	std::cout << "x: " << coords.x << " y: " << coords.y << " z: " << coords.z
