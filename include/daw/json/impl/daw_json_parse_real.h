@@ -32,10 +32,10 @@ namespace daw::json {
 	inline namespace DAW_JSON_VER {
 		namespace json_details {
 			template<bool skip_end_check, typename Unsigned>
-			DAW_ATTRIB_FLATINLINE inline constexpr void
-			parse_digits_until_last( char const *DAW_RESTRICT first,
-			                         char const *const DAW_RESTRICT last,
-			                         Unsigned &DAW_RESTRICT v ) {
+			DAW_ATTRIB_NONNULL( )
+			DAW_ATTRIB_FLATINLINE inline constexpr void parse_digits_until_last(
+			  char const *DAW_RESTRICT first, char const *const DAW_RESTRICT last,
+			  Unsigned &DAW_RESTRICT v ) {
 				Unsigned value = v;
 				if constexpr( skip_end_check ) {
 					auto dig = parse_digit( *first );
@@ -56,10 +56,10 @@ namespace daw::json {
 			}
 
 			template<bool skip_end_check, typename Unsigned, typename CharT>
-			[[nodiscard]] DAW_ATTRIB_FLATINLINE inline constexpr CharT *
-			parse_digits_while_number( CharT *DAW_RESTRICT first,
-			                           CharT *const DAW_RESTRICT last,
-			                           Unsigned &DAW_RESTRICT v ) {
+			[[nodiscard]] DAW_ATTRIB_NONNULL( ) DAW_ATTRIB_FLATINLINE
+			  inline constexpr CharT *parse_digits_while_number(
+			    CharT *DAW_RESTRICT first, CharT *const DAW_RESTRICT last,
+			    Unsigned &DAW_RESTRICT v ) {
 
 				// silencing gcc9 unused warning.  last is used inside if constexpr
 				// blocks
@@ -94,9 +94,10 @@ namespace daw::json {
 			/// the type, usually uint64_t
 			template<typename ParseState, typename Result,
 			         typename max_storage_digits, typename CharT>
-			[[nodiscard]] inline constexpr bool
-			should_use_strtod( CharT *whole_first, CharT *whole_last,
-			                   CharT *fract_first, CharT *fract_last ) {
+			DAW_ATTRIB_NONNULL( ( 1, 2 ) )
+			[[nodiscard]] inline constexpr bool should_use_strtod(
+			  CharT *whole_first, CharT *whole_last, CharT *fract_first,
+			  CharT *fract_last ) {
 				if constexpr( std::is_floating_point_v<Result> and
 				              ParseState::precise_ieee754 ) {
 					return DAW_UNLIKELY(

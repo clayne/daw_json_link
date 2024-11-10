@@ -141,8 +141,10 @@ namespace daw::json {
 			}
 
 			template<bool skip_end_check, typename CharT>
-			DAW_ATTRIB_FLATINLINE [[nodiscard]] static inline constexpr CharT *
-			skip_digits( CharT *first, CharT *const last ) {
+			DAW_ATTRIB_NONNULL( )
+			DAW_ATTRIB_RET_NONNULL DAW_ATTRIB_FLATINLINE
+			  [[nodiscard]] static inline constexpr CharT *skip_digits(
+			    CharT *first, CharT *const last ) {
 				(void)last; // only used inside if constexpr and gcc9 warns
 				unsigned dig = parse_digit( *first );
 				while( dig < 10 ) {
@@ -217,7 +219,7 @@ namespace daw::json {
 			template<typename ParseState>
 #endif
 			[[nodiscard]] static constexpr ParseState
-			  skip_number( ParseState &parse_state ) {
+			skip_number( ParseState &parse_state ) {
 				using CharT = typename ParseState::CharT;
 				daw_json_assert_weak( parse_state.has_more( ),
 				                      ErrorReason::UnexpectedEndOfData, parse_state );

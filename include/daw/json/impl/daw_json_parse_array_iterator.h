@@ -45,12 +45,13 @@ namespace daw::json {
 
 				explicit json_parse_array_iterator_base( ) = default;
 
-				explicit inline constexpr json_parse_array_iterator_base(
-				  ParseState *pd ) noexcept
+				DAW_ATTRIB_NONNULL( )
+				explicit inline constexpr
+				json_parse_array_iterator_base( ParseState *pd ) noexcept
 				  : parse_state( pd )
 				  , counter( static_cast<difference_type>( pd->counter ) ) {}
 
-				inline constexpr difference_type
+				constexpr difference_type
 				operator-( json_parse_array_iterator_base const &rhs ) const {
 					// rhs is the iterator with the parser in it.  We should know how many
 					// items are in play because we already counted them in the skip_array
@@ -96,7 +97,7 @@ namespace daw::json {
 					}
 				}
 #endif
-				inline constexpr explicit json_parse_array_iterator( parse_state_t &r )
+				constexpr explicit json_parse_array_iterator( parse_state_t &r )
 				  : base{ &r } {
 					if( DAW_UNLIKELY( base::parse_state->front( ) == ']' ) ) {
 						if constexpr( not KnownBounds ) {

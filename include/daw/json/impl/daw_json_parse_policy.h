@@ -55,20 +55,7 @@ namespace daw::json {
 				return PolicyFlags;
 			}
 
-			/***
-			 * Allow temporarily setting a sentinel in the buffer to reduce range
-			 * checking costs
-			 */
-			/*
-		 static DAW_CONSTEVAL bool allow_temporarily_mutating_buffer( ) {
-			 return json_details::get_bits_for<options::TemporarilyMutateBuffer>(
-			          PolicyFlags ) == options::TemporarilyMutateBuffer::yes;
-		 }
-			 */
-
-			using CharT =
-			  char const; /*daw::conditional_t<allow_temporarily_mutating_buffer(
-			                 ), char, char const>;*/
+			using CharT = char const;
 			using iterator = CharT *;
 
 			/***
@@ -295,7 +282,7 @@ namespace daw::json {
 					return true;
 				}
 				if constexpr( is_zero_terminated_string ) {
-					return first >= last or * first == '\0';
+					return first >= last or *first == '\0';
 				} else {
 					return first >= last;
 				}
@@ -406,19 +393,19 @@ namespace daw::json {
 			}
 
 			[[nodiscard]] constexpr bool is_opening_bracket_checked( ) const {
-				return DAW_LIKELY( first < last ) and * first == '[';
+				return DAW_LIKELY( first < last ) and *first == '[';
 			}
 
 			[[nodiscard]] constexpr bool is_opening_brace_checked( ) const {
-				return DAW_LIKELY( first < last ) and * first == '{';
+				return DAW_LIKELY( first < last ) and *first == '{';
 			}
 
 			[[nodiscard]] constexpr bool is_closing_brace_checked( ) const {
-				return DAW_LIKELY( first < last ) and * first == '}';
+				return DAW_LIKELY( first < last ) and *first == '}';
 			}
 
 			[[nodiscard]] constexpr bool is_quotes_checked( ) const {
-				return DAW_LIKELY( first < last ) and * first == '"';
+				return DAW_LIKELY( first < last ) and *first == '"';
 			}
 
 			DAW_ATTRIB_INLINE constexpr void trim_left( ) {
@@ -525,8 +512,8 @@ namespace daw::json {
 		BasicParsePolicy( char const *, char const *, Allocator const & )
 		  -> BasicParsePolicy<json_details::default_policy_flag, Allocator>;
 
-		BasicParsePolicy( char const *, char const *, char const *,
-		                  char const * ) -> BasicParsePolicy<>;
+		BasicParsePolicy( char const *, char const *, char const *, char const * )
+		  -> BasicParsePolicy<>;
 
 		template<typename Allocator>
 		BasicParsePolicy( char const *, char const *, char const *, char const *,

@@ -32,8 +32,8 @@ namespace daw::json {
 			/// provides either a customization point or will call the overload found
 			/// via ADL
 			template<typename Real>
-			DAW_ATTRIB_NOINLINE [[nodiscard]] Real
-			parse_with_strtod( char const *first, char const *last ) {
+			DAW_ATTRIB_NOINLINE DAW_ATTRIB_NONNULL( ) [[nodiscard]] Real
+			  parse_with_strtod( char const *first, char const *last ) {
 				static_assert( std::is_floating_point_v<Real>,
 				               "Unexpected type passed to parse_with_strtod" );
 #if defined( DAW_JSON_USE_STRTOD )

@@ -29,9 +29,10 @@ namespace daw::json {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wc++23-extensions"
 #endif
-			[[nodiscard]] DAW_JSON_CPP23_STATIC_CALL_OP inline constexpr result_type
-			operator( )( char const *ptr,
-			             std::size_t sz ) DAW_JSON_CPP23_STATIC_CALL_OP_CONST {
+			[[nodiscard]] DAW_ATTRIB_NONNULL( ) DAW_JSON_CPP23_STATIC_CALL_OP
+			  inline constexpr result_type
+			  operator( )( char const *ptr,
+			               std::size_t sz ) DAW_JSON_CPP23_STATIC_CALL_OP_CONST {
 				return datetime::parse_iso8601_timestamp<result_type>(
 				  daw::string_view( ptr, sz ) );
 			}

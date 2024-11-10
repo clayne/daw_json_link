@@ -258,6 +258,7 @@ namespace daw::json {
 				case ']':
 					return false;
 				default:
+				  DAW_UNLIKELY_BRANCH
 					daw_json_error( ErrorReason::ExpectedTokenNotFound, m_state );
 				}
 			}

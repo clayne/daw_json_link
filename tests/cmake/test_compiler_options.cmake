@@ -54,6 +54,7 @@ if( ${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang" OR ${CMAKE_CXX_COMPILER_ID} STREQU
 				# This is for when specializing things like tuple_size and each implementer gets to choose struct/class
 				-Wno-mismatched-tags
 				-Wno-global-constructors
+				-Wno-nullability-extension
 				)
 		if( ${CMAKE_CXX_COMPILER_ID} STREQUAL "AppleClang" )
 			if( CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 14 )
@@ -177,6 +178,7 @@ elseif( ${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" )
 											 -Wold-style-cast
 											 -Wshadow
 											 -Wzero-as-null-pointer-constant
+											 -Wnull-dereference
 											 )
 	if( CMAKE_CXX_COMPILER_VERSION GREATER_EQUAL 12.0.0 )
 		add_compile_options(

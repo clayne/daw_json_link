@@ -59,8 +59,9 @@ namespace daw::json {
 				}
 			}
 
-			[[nodiscard]] inline constexpr bool
-			is_made_of_eight_digits_cx( char const *ptr ) {
+			[[nodiscard]]
+			DAW_ATTRIB_NONNULL( ) inline constexpr bool is_made_of_eight_digits_cx(
+			  char const *ptr ) {
 				// The copy to local buffer is to get the compiler to treat it like a
 				// reinterpret_cast
 
@@ -90,6 +91,7 @@ namespace daw::json {
 
 			// Constexpr'ified version from
 			// https://kholdstare.github.io/technical/2020/05/26/faster-integer-parsing.html
+			DAW_ATTRIB_NONNULL( )
 			inline constexpr UInt64 parse_8_digits( char const *const str ) {
 				auto const chunk = daw::to_uint64_buffer( str );
 				// 1-byte mask trick (works on 4 pairs of single digits)
@@ -119,6 +121,7 @@ namespace daw::json {
 			static_assert( parse_8_digits( "12345678" ) == 1234'5678_u64,
 			               "8 digit parser does not work on this platform" );
 
+			DAW_ATTRIB_NONNULL( )
 			inline constexpr UInt64 parse_16_digits( char const *const str ) {
 				auto const upper = parse_8_digits( str );
 				auto const lower = parse_8_digits( str + 8 );
@@ -339,6 +342,7 @@ namespace daw::json {
 			//
 			//
 			https://github.com/lemire/simdjson/blob/102262c7abe64b517a36a6049b39d95f58bf4aea/src/haswell/numberparsing.h
+			DAW_ATTRIB_NONNULL( )
 			inline UInt64 parse_eight_digits_unrolled( char const *ptr ) {
 			  // this actually computes *16* values so we are being wasteful.
 			  static __m128i const ascii0 = _mm_set1_epi8( '0' );

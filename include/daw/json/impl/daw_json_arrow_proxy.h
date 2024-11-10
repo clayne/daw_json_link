@@ -9,6 +9,8 @@
 
 #include "version.h"
 
+#include <daw/daw_attributes.h>
+
 namespace daw::json {
 	inline namespace DAW_JSON_VER {
 		namespace json_details {
@@ -16,10 +18,10 @@ namespace daw::json {
 			struct arrow_proxy {
 				T value;
 
-				[[nodiscard]] constexpr T *operator->( ) && {
+				[[nodiscard]] DAW_ATTRIB_RET_NONNULL constexpr T *operator->( ) && {
 					return &value;
 				}
 			};
 		} // namespace json_details
-	}   // namespace DAW_JSON_VER
+	} // namespace DAW_JSON_VER
 } // namespace daw::json

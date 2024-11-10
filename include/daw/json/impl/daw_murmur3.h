@@ -33,8 +33,9 @@ namespace daw {
 	} // namespace murmur3_details
 
 	template<std::size_t N, typename CharT>
+	DAW_ATTRIB_NONNULL( )
 	[[nodiscard]] DAW_ATTRIB_INLINE static constexpr UInt32
-	fnv1a_32_N( CharT *first, UInt32 hash = 0x811c'9dc5_u32 ) {
+	  fnv1a_32_N( CharT *first, UInt32 hash = 0x811c'9dc5_u32 ) {
 		daw::algorithm::do_n_arg<N>( [&]( std::size_t n ) {
 			hash ^= static_cast<UInt32>( static_cast<unsigned char>( first[n] ) );
 			hash *= 0x0100'0193_u32;
