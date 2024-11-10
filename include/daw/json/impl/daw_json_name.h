@@ -38,8 +38,9 @@ namespace daw::json {
 
 		public:
 			template<std::size_t... Is>
+			DAW_ATTRIB_NONNULL( )
 			DAW_ATTRIB_INLINE DAW_CONSTEVAL
-			json_name( char const *ptr, std::index_sequence<Is...> ) noexcept
+			  json_name( char const *ptr, std::index_sequence<Is...> ) noexcept
 			  : m_data{ ptr[Is]... } {}
 
 			DAW_ATTRIB_INLINE DAW_CONSTEVAL
@@ -52,14 +53,16 @@ namespace daw::json {
 			}
 
 			// Needed for copy_to_iterator
-			[[nodiscard]] DAW_ATTRIB_INLINE constexpr char const *
-			begin( ) const noexcept {
+			[[nodiscard]] DAW_ATTRIB_RET_NONNULL
+			  DAW_ATTRIB_INLINE constexpr char const *
+			  begin( ) const noexcept {
 				return m_data;
 			}
 
 			// Needed for copy_to_iterator
-			[[nodiscard]] DAW_ATTRIB_INLINE constexpr char const *
-			end( ) const noexcept {
+			[[nodiscard]] DAW_ATTRIB_RET_NONNULL
+			  DAW_ATTRIB_INLINE constexpr char const *
+			  end( ) const noexcept {
 				return m_data + static_cast<ptrdiff_t>( size( ) );
 			}
 

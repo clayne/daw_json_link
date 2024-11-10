@@ -17,6 +17,7 @@
 #include <daw/daw_undefined.h>
 #include <daw/traits/daw_traits_nth_element.h>
 
+#include <cassert>
 #include <cstddef>
 #include <daw/stdinc/integer_sequence.h>
 
@@ -35,10 +36,12 @@ namespace daw::json {
 			public:
 				basic_array_t( ) = default;
 
+				DAW_ATTRIB_RET_NONNULL
 				constexpr T const *data( ) const {
 					return array;
 				}
 
+				DAW_ATTRIB_RET_NONNULL
 				constexpr T *data( ) {
 					return array;
 				}
@@ -53,6 +56,7 @@ namespace daw::json {
 					++position;
 				}
 			};
+
 			template<typename T>
 			struct basic_array_t<T, 0> {
 				static constexpr std::size_t capacity = 0;

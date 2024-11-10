@@ -44,8 +44,9 @@ namespace daw::json {
 
 				explicit json_parse_kv_array_iterator_base( ) = default;
 
-				explicit constexpr json_parse_kv_array_iterator_base(
-				  ParseState *pd ) noexcept
+				DAW_ATTRIB_NONNULL( )
+				explicit constexpr
+				json_parse_kv_array_iterator_base( ParseState *pd ) noexcept
 				  : parse_state( pd )
 				  , counter( static_cast<difference_type>( pd->counter ) ) {}
 

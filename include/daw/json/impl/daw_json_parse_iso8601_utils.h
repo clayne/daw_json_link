@@ -15,6 +15,7 @@
 #include "daw_json_parse_digit.h"
 
 #include <daw/daw_arith_traits.h>
+#include <daw/daw_attributes.h>
 #include <daw/daw_cpp_feature_check.h>
 #include <daw/daw_cxmath.h>
 #include <daw/daw_string_view.h>
@@ -29,6 +30,7 @@ namespace daw::json {
 	inline namespace DAW_JSON_VER {
 		namespace parse_utils {
 			template<typename Result, std::size_t count>
+			DAW_ATTRIB_NONNULL( )
 			constexpr Result parse_unsigned( char const *digit_str ) {
 				UInt64 result = UInt64( );
 				for( std::size_t n = 0; n < count; ++n ) {
@@ -44,6 +46,7 @@ namespace daw::json {
 			}
 
 			template<typename Result>
+			DAW_ATTRIB_NONNULL( )
 			constexpr Result parse_unsigned2( char const *digit_str ) {
 				UInt64 result = UInt64( );
 				unsigned dig = json_details::parse_digit( *digit_str );
@@ -382,6 +385,7 @@ namespace daw::json {
 				case 12:
 					return { "Dec" };
 				default:
+					DAW_UNLIKELY_BRANCH
 					daw_json_error( ErrorReason::InvalidTimestamp ); // Invalid month
 				}
 			}
@@ -411,6 +415,7 @@ namespace daw::json {
 				case 6:
 					return { "Sat" };
 				default:
+					DAW_UNLIKELY_BRANCH
 					daw_json_error( ErrorReason::InvalidTimestamp ); // Invalid month
 				}
 			}
@@ -457,6 +462,7 @@ namespace daw::json {
 				case datetime_details::month2num( "Dec" ):
 					return 12;
 				default:
+					DAW_UNLIKELY_BRANCH
 					daw_json_error( ErrorReason::InvalidTimestamp ); // Invalid month
 				}
 			}

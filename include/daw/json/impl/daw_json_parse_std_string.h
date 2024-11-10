@@ -40,8 +40,9 @@ namespace daw::json {
 			}
 
 			template<bool is_unchecked_input>
+			DAW_ATTRIB_NONNULL( )
 			[[nodiscard]] static inline constexpr UInt16
-			byte_from_nibbles( char const *&first ) {
+			  byte_from_nibbles( char const *&first ) {
 				auto const n0 = to_nibble( static_cast<unsigned char>( *first++ ) );
 				auto const n1 = to_nibble( static_cast<unsigned char>( *first++ ) );
 				if constexpr( is_unchecked_input ) {
@@ -55,8 +56,9 @@ namespace daw::json {
 			}
 
 			template<typename ParseState>
-			[[nodiscard]] static constexpr char *
-			decode_utf16( ParseState &parse_state, char *it ) {
+			DAW_ATTRIB_NONNULL( )
+			DAW_ATTRIB_RET_NONNULL [[nodiscard]] static constexpr char *decode_utf16(
+			  ParseState &parse_state, char *it ) {
 				constexpr bool is_unchecked_input = ParseState::is_unchecked_input;
 				daw_json_assert_weak( parse_state.size( ) >= 5,
 				                      ErrorReason::UnexpectedEndOfData, parse_state );
@@ -199,7 +201,7 @@ namespace daw::json {
 			// appender
 			template<bool AllowHighEight, typename JsonMember, bool KnownBounds,
 			         typename ParseState>
-			[[nodiscard]] static constexpr auto // json_result_t<JsonMember>
+			[[nodiscard]] static constexpr auto
 			parse_string_known_stdstring( ParseState &parse_state ) {
 				using string_type = json_base_type_t<JsonMember>;
 				string_type result =

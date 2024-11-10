@@ -20,9 +20,10 @@ namespace daw::json {
 			 * value
 			 */
 			template<typename ParseState>
-			inline constexpr bool needs_slow_path( ParseState const &parse_state ) {
+			DAW_ATTRIB_INLINE constexpr bool
+			needs_slow_path( ParseState const &parse_state ) {
 				return static_cast<std::ptrdiff_t>( parse_state.counter ) >= 0;
 			}
 		} // namespace json_details
-	}   // namespace DAW_JSON_VER
+	} // namespace DAW_JSON_VER
 } // namespace daw::json

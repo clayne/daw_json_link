@@ -105,7 +105,7 @@ namespace daw::json {
 					}
 				}
 
-				DAW_ATTRIB_NOINLINE value_type operator*( ) const {
+				[[noreturn]] DAW_ATTRIB_NOINLINE value_type operator*( ) const {
 					// This is hear to satisfy indirectly_readable
 					daw_json_error( ErrorReason::UnexpectedEndOfData );
 				}

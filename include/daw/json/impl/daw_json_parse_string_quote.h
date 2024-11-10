@@ -39,6 +39,7 @@ namespace daw::json {
 			}
 
 			template<typename CharT>
+			DAW_ATTRIB_NONNULL( )
 			inline constexpr void skip_to_first8( CharT *&first, CharT *const last ) {
 				bool keep_going = last - first >= 8;
 				while( keep_going ) {
@@ -69,6 +70,7 @@ namespace daw::json {
 			}
 
 			template<typename CharT>
+			DAW_ATTRIB_NONNULL( )
 			inline constexpr void skip_to_first4( CharT *&first, CharT *const last ) {
 				bool keep_going = last - first >= 4;
 				while( keep_going ) {
@@ -101,7 +103,7 @@ namespace daw::json {
 					// daw_json_assert_weak( first != '"', "Unexpected quote", parse_state
 					// );
 					if constexpr( daw::traits::not_same_v<typename ParseState::exec_tag_t,
-					                                 constexpr_exec_tag> ) {
+					                                      constexpr_exec_tag> ) {
 						first = mem_skip_until_end_of_string<true>(
 						  ParseState::exec_tag, first, last, need_slow_path );
 					} else {
@@ -143,7 +145,7 @@ namespace daw::json {
 					CharT *first = parse_state.first;
 					CharT *const last = parse_state.class_last;
 					if constexpr( daw::traits::not_same_v<typename ParseState::exec_tag_t,
-					                                 constexpr_exec_tag> ) {
+					                                      constexpr_exec_tag> ) {
 						first = mem_skip_until_end_of_string<false>(
 						  ParseState::exec_tag, first, last, need_slow_path );
 					} else {
