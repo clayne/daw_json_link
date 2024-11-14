@@ -20,8 +20,8 @@
     * [Key Values](docs/cookbook/key_values.md) - Map and Dictionary like things
     * [Mapping Deduction](docs/cookbook/mapping_deduction.md)
     * [Member Options](docs/cookbook/member_options.md) - Options for the parse mappings
-    * [Nullable Concept](nullable_value_concept.md) - Trait for mapping Option/Nullable types used in deduction
-    * [Nullable JSON Values](json_nullable.md) 
+    * [Nullable Concept](docs/cookbook/nullable_value_concept.md) - Trait for mapping Option/Nullable types used in deduction
+    * [Nullable JSON Values](docs/cookbook/json_nullable.md)
     * [Numbers](docs/cookbook/numbers.md)
     * [Output Options](docs/cookbook/output_options.md) - Options for serialization
     * [Parser Options](docs/cookbook/parser_policies.md) - Options for parsing
