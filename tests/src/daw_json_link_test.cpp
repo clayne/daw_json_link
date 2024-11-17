@@ -834,7 +834,7 @@ int main( int, char ** ) {
 			  daw::json::from_json<OptionalOrdered>( optional_ordered1_data );
 			daw::expecting( not v.b );
 		}
-#if ( defined( __GNUC__ ) and __GNUC__ <= 9 ) or ( defined( _MSC_VER ) )
+#if( defined( __GNUC__ ) and __GNUC__ <= 9 ) or ( defined( _MSC_VER ) )
 #define CX
 #elif defined( DAW_JSON_NO_CONST_EXPR )
 #define CX
@@ -924,22 +924,26 @@ int main( int, char ** ) {
 		  json_number_no_name<double, options::number_opt(
 		                                options::LiteralAsStringOpt::Always,
 		                                options::JsonNumberErrors::AllowNanInf )>;
-		std::cout << "Inf double: " << "serialize: "
+		std::cout << "Inf double: "
+		          << "serialize: "
 		          << to_json<num_t>( std::numeric_limits<double>::infinity( ) )
 		          << '\n';
 		std::cout << "parse: " << from_json<num_t>( R"("Infinity")" ) << '\n';
-		std::cout << "-Inf double: " << "serialize: "
+		std::cout << "-Inf double: "
+		          << "serialize: "
 		          << to_json<num_t>( -std::numeric_limits<double>::infinity( ) )
 		          << '\n';
 		std::cout << "parse: " << from_json<num_t>( R"("-Infinity")" ) << '\n';
 
-		std::cout << "NaN double: " << "serialize: "
+		std::cout << "NaN double: "
+		          << "serialize: "
 		          << to_json<num_t>( std::numeric_limits<double>::quiet_NaN( ) )
 		          << '\n';
 		std::cout << "parse: " << from_json<num_t>( R"("NaN")" ) << '\n';
 
-		std::cout << "Negative 0: " << "serialize: "
-		          << to_json<num_t>( std::copysign( 0.0, -1.0 ) ) << '\n';
+		std::cout << "Negative 0: "
+		          << "serialize: " << to_json<num_t>( std::copysign( 0.0, -1.0 ) )
+		          << '\n';
 
 		std::cout << "parse: " << from_json<double>( "-0.0" ) << '\n';
 
@@ -1154,7 +1158,7 @@ int main( int, char ** ) {
 		test_vector_of_bool( );
 		static_assert( from_json<bool>( "true" ) );
 		static_assert( not from_json<bool>( "false" ) );
-		static_assert( not*from_json<std::optional<bool>>( "false" ) );
+		static_assert( not *from_json<std::optional<bool>>( "false" ) );
 		static_assert( not from_json<std::optional<bool>>( "null" ) );
 		static_assert( from_json<signed char>( "-1" ) ==
 		               static_cast<signed char>( -1 ) );
@@ -1482,6 +1486,20 @@ int main( int, char ** ) {
 			  } );
 			ensure( x == 5 );
 		}
+#if defined( LLONG_MIN )
+		{
+			static constexpr auto most_min = LLONG_MIN;
+			auto most_min_json = to_json( most_min );
+#define xstr( a ) str( a )
+#define str( a ) #a
+			daw::string_view min_str = "" xstr( LLONG_MIN );
+			ensure( most_min_json == min_str );
+#undef xstr
+#undef str
+			auto const most_min_parsed = from_json<long long>( most_min_json );
+			ensure( most_min == most_min_parsed );
+		}
+#endif
 	}
 #if defined( DAW_USE_EXCEPTIONS )
 	catch( daw::json::json_exception const &jex ) {

@@ -40,23 +40,12 @@ namespace daw::json {
 	inline namespace DAW_JSON_VER {
 		namespace json_details {
 			template<typename Signed, typename Unsigned>
-			static constexpr Signed to_signed( Unsigned &&u, Signed sign ) {
-				using unsigned_t = daw::remove_cvref_t<Unsigned>;
-				if constexpr( sizeof( Signed ) >= sizeof( intmax_t ) and
-				              daw::is_system_integral_v<unsigned_t> and
-				              daw::is_system_integral_v<Signed> and
-				              sizeof( Signed ) == sizeof( unsigned_t ) ) {
-					if( DAW_UNLIKELY( u == ( static_cast<unsigned_t>(
-					                           ( daw::numeric_limits<Signed>::max )( ) ) +
-					                         1 ) ) ) {
-						// the bits of static_cast<unsigned_t>( limits<Signed>::max( ) ) + 1
-						// are the same as limits<Signed>::min( ).  We can just cast
-						return static_cast<Signed>( u );
-					}
-					return sign * static_cast<Signed>( u );
-				} else {
-					return sign * static_cast<Signed>( u );
+			DAW_ATTRIB_INLINE constexpr Signed to_signed( Unsigned &&u,
+			                                              Signed sign ) {
+				if( sign <= Signed{ 0 } ) {
+					return static_cast<Signed>( -u );
 				}
+				return static_cast<Signed>( u );
 			}
 
 			[[nodiscard]]
