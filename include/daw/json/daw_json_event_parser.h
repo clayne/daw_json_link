@@ -280,9 +280,10 @@ namespace daw::json {
 			std::pair<iterator, iterator> value;
 		};
 
-		template<typename StackValue>
+		template<typename StackValue, typename StackType = std::vector<StackValue>>
 		class DefaultJsonEventParserStackPolicy {
-			std::vector<StackValue> m_stack{ };
+			using stack_t = StackType;
+			stack_t m_stack{ };
 
 		public:
 			using value_type = StackValue;
@@ -290,7 +291,7 @@ namespace daw::json {
 			using size_type = std::size_t;
 			using difference_type = std::ptrdiff_t;
 
-			DefaultJsonEventParserStackPolicy( ) {
+			CPP20CONSTEXPR DefaultJsonEventParserStackPolicy( ) {
 				m_stack.reserve( 128 );
 			}
 
