@@ -314,9 +314,8 @@ namespace daw::json {
 			}
 		};
 
-		template<json_options_t P, typename A,
-		         typename StackContainerPolicy = use_default, typename Handler,
-		         auto... ParseFlags>
+		template<typename StackContainerPolicy = use_default, json_options_t P,
+		         typename A, typename Handler, auto... ParseFlags>
 		constexpr void json_event_parser( basic_json_value<P, A> bjv,
 		                                  Handler &&handler,
 		                                  options::parse_flags_t<ParseFlags...> ) {
