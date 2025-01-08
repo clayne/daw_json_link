@@ -290,7 +290,9 @@ namespace daw::json {
 			using size_type = std::size_t;
 			using difference_type = std::ptrdiff_t;
 
-			DefaultJsonEventParserStackPolicy( ) = default;
+			DefaultJsonEventParserStackPolicy( ) {
+				m_stack.reserve( 128 );
+			}
 
 			CPP20CONSTEXPR void push_back( value_type &&v ) {
 				m_stack.push_back( std::move( v ) );
