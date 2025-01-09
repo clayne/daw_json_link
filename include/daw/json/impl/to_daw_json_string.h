@@ -54,8 +54,8 @@ namespace daw::json {
 			// Need to use ADL to_string in unevaluated contexts.  Limiting to it's
 			// own namespace
 			template<typename T>
-			[[nodiscard]] static constexpr auto
-			to_string( std::optional<T> const &v ) -> decltype( to_string( *v ) ) {
+			[[nodiscard]] static constexpr auto to_string( std::optional<T> const &v )
+			  -> decltype( to_string( *v ) ) {
 				if( not has_value( v ) ) {
 					return { "null" };
 				}
@@ -224,7 +224,7 @@ namespace daw::json {
 				                         to_nibble_char( ( c >> 12U ) & 0xFU ),
 				                         to_nibble_char( ( c >> 8U ) & 0xFU ),
 				                         to_nibble_char( ( c >> 4U ) & 0xFU ),
-				                         to_nibble_char( c & 0xFU ) };
+				                         to_nibble_char( c & 0xFU ), '\0' };
 
 				it.write( nibbles );
 				return it;
@@ -240,7 +240,7 @@ namespace daw::json {
 				if( cp <= 0x7FFU ) {
 					char const tmp[] = {
 					  static_cast<char>( ( cp >> 6U ) | 0b11000000U ),
-					  static_cast<char>( ( cp & 0b00111111U ) | 0b10000000U ) };
+					  static_cast<char>( ( cp & 0b00111111U ) | 0b10000000U ), '\0' };
 					it.write( tmp );
 					return;
 				}
@@ -248,7 +248,7 @@ namespace daw::json {
 					char const tmp[]{
 					  static_cast<char>( ( cp >> 12U ) | 0b11100000U ),
 					  static_cast<char>( ( ( cp >> 6U ) & 0b00111111U ) | 0b10000000U ),
-					  static_cast<char>( ( cp & 0b00111111U ) | 0b10000000U ) };
+					  static_cast<char>( ( cp & 0b00111111U ) | 0b10000000U ), '\0' };
 					it.write( tmp );
 					return;
 				}
@@ -257,7 +257,7 @@ namespace daw::json {
 					  static_cast<char>( ( cp >> 18U ) | 0b11110000U ),
 					  static_cast<char>( ( ( cp >> 12U ) & 0b00111111U ) | 0b10000000U ),
 					  static_cast<char>( ( ( cp >> 6U ) & 0b00111111U ) | 0b10000000U ),
-					  static_cast<char>( ( cp & 0b00111111U ) | 0b10000000U ) };
+					  static_cast<char>( ( cp & 0b00111111U ) | 0b10000000U ), '\0' };
 					it.write( tmp );
 					return;
 				}
