@@ -67,9 +67,8 @@ namespace daw::json {
 		namespace datetime {
 			namespace datetime_details {
 
-				template<typename Result, string_view_bounds_type Bounds>
-				constexpr Result
-				parse_number( daw::basic_string_view<char, Bounds> sv ) {
+				template<typename Result>
+				constexpr Result parse_number( daw::string_view sv ) {
 					static_assert( daw::numeric_limits<Result>::digits10 >= 4 );
 					daw_json_ensure( not sv.empty( ), ErrorReason::InvalidNumber );
 					Result result = 0;
@@ -172,9 +171,8 @@ namespace daw::json {
 				std::uint32_t day;
 			};
 
-			template<string_view_bounds_type Bounds>
-			constexpr date_parts parse_iso_8601_date(
-			  daw::basic_string_view<char, Bounds> timestamp_str ) {
+			constexpr date_parts
+			parse_iso_8601_date( daw::string_view timestamp_str ) {
 				auto result = date_parts{ 0, 0, 0 };
 				result.day = parse_utils::parse_unsigned<std::uint_least32_t, 2>(
 				  std::data( timestamp_str.pop_back( 2U ) ) );
@@ -202,21 +200,18 @@ namespace daw::json {
 				std::uint64_t nanosecond;
 			};
 
-			template<string_view_bounds_type Bounds>
-			constexpr time_parts parse_iso_8601_time(
-			  daw::basic_string_view<char, Bounds> timestamp_str ) {
+			constexpr time_parts
+			parse_iso_8601_time( daw::string_view timestamp_str ) {
 				auto result = time_parts{ 0, 0, 0, 0 };
 				result.hour = parse_utils::parse_unsigned<std::uint_least32_t, 2>(
 				  std::data( timestamp_str.pop_front( 2 ) ) );
-				daw_json_ensure( result.hour >= 0 and result.hour <= 24,
-				                 ErrorReason::InvalidTimestamp );
+				daw_json_ensure( result.hour <= 24, ErrorReason::InvalidTimestamp );
 				if( not parse_utils::is_number( timestamp_str.front( ) ) ) {
 					timestamp_str.remove_prefix( );
 				}
 				result.minute = parse_utils::parse_unsigned<std::uint_least32_t, 2>(
 				  std::data( timestamp_str.pop_front( 2 ) ) );
-				daw_json_ensure( result.minute >= 0 and result.minute <= 59,
-				                 ErrorReason::InvalidTimestamp );
+				daw_json_ensure( result.minute <= 59, ErrorReason::InvalidTimestamp );
 				if( timestamp_str.empty( ) ) {
 					return result;
 				}
@@ -225,8 +220,7 @@ namespace daw::json {
 				}
 				result.second = parse_utils::parse_unsigned<std::uint_least32_t, 2>(
 				  std::data( timestamp_str.pop_front( 2 ) ) );
-				daw_json_ensure( result.second >= 0 and result.second <= 60,
-				                 ErrorReason::InvalidTimestamp );
+				daw_json_ensure( result.second <= 60, ErrorReason::InvalidTimestamp );
 				if( timestamp_str.empty( ) ) {
 					return result;
 				}
@@ -241,9 +235,8 @@ namespace daw::json {
 				return result;
 			}
 
-			template<typename TP, string_view_bounds_type Bounds>
-			constexpr TP
-			parse_iso8601_timestamp( daw::basic_string_view<char, Bounds> ts ) {
+			template<typename TP>
+			constexpr TP parse_iso8601_timestamp( daw::string_view ts ) {
 				constexpr daw::string_view t_str = "T";
 				auto const date_str = ts.pop_front_until( t_str );
 				if( ts.empty( ) ) {
