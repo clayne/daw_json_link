@@ -1,6 +1,9 @@
 # TODO clean this up, but for now it makes tests get appropriate options
 
 cmake_policy( SET CMP0065 NEW )
+cmake_policy( SET CMP0156 NEW )
+cmake_policy( SET CMP0179 NEW )
+cmake_policy( SET CMP0167 NEW )
 
 set( CMAKE_CXX_STANDARD_REQUIRED ON )
 if( CYGWIN )
@@ -600,9 +603,10 @@ add_test( NAME cookbook_numbers2_test COMMAND cookbook_numbers2_test ./cookbook_
 add_dependencies( ci_tests cookbook_numbers2_test )
 add_dependencies( full cookbook_numbers2_test )
 
+
 if( Boost_FOUND AND DAW_USE_EXCEPTIONS )
 	add_executable( cookbook_numbers3_test src/cookbook_numbers3_test.cpp )
-	target_link_libraries( cookbook_numbers3_test PRIVATE test Boost::headers )
+	target_link_libraries( cookbook_numbers3_test PRIVATE json_test Boost::headers )
 	add_test( NAME cookbook_numbers3_test COMMAND cookbook_numbers3_test ./cookbook_numbers3.json WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/test_data/" )
 	add_dependencies( ci_tests cookbook_numbers3_test )
 	add_dependencies( full cookbook_numbers3_test )
@@ -820,6 +824,13 @@ if( DAW_USE_EXCEPTIONS )
 	add_test( NAME issue_413_test COMMAND issue_413_test )
 	add_dependencies( ci_tests issue_413_test )
 	add_dependencies( full issue_413_test )
+
+	add_executable( issue_462_test src/issue_462_test.cpp )
+	target_link_libraries( issue_462_test PRIVATE json_test )
+	add_test( NAME issue_462_test COMMAND issue_462_test )
+	add_dependencies( ci_tests issue_462_test )
+	add_dependencies( full issue_462_test )
+
 
 endif()
 
@@ -1156,7 +1167,7 @@ if( GIT_FOUND )
 	target_compile_definitions( json_benchmark PRIVATE -DSOURCE_CONTROL_REVISION="${BUILD_VERSION}" )
 	target_link_libraries( json_benchmark PRIVATE json_test )
 	if( DEFINED MSVC AND NOT ${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang" )
-		add_compile_options( "/bigobj" )
+		target_compile_options( json_benchmark PRIVATE /bigobj )
 	endif()
 
 	cmake_host_system_information( RESULT _proc_desc QUERY PROCESSOR_DESCRIPTION )

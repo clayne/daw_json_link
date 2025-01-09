@@ -280,9 +280,10 @@ namespace daw::json {
 			std::pair<iterator, iterator> value;
 		};
 
-		template<typename StackValue>
+		template<typename StackValue, typename StackType = std::vector<StackValue>>
 		class DefaultJsonEventParserStackPolicy {
-			std::vector<StackValue> m_stack{ };
+			using stack_t = StackType;
+			stack_t m_stack{ };
 
 		public:
 			using value_type = StackValue;
@@ -313,9 +314,8 @@ namespace daw::json {
 			}
 		};
 
-		template<json_options_t P, typename A,
-		         typename StackContainerPolicy = use_default, typename Handler,
-		         auto... ParseFlags>
+		template<typename StackContainerPolicy = use_default, json_options_t P,
+		         typename A, typename Handler, auto... ParseFlags>
 		constexpr void json_event_parser( basic_json_value<P, A> bjv,
 		                                  Handler &&handler,
 		                                  options::parse_flags_t<ParseFlags...> ) {
@@ -521,30 +521,32 @@ namespace daw::json {
 			                 ErrorReason::InvalidEndOfValue );
 		}
 
-		template<json_options_t P, typename A,
-		         typename StackContainerPolicy = use_default, typename Handler>
+		template<typename StackContainerPolicy = use_default, json_options_t P,
+		         typename A, typename Handler>
 		DAW_ATTRIB_INLINE constexpr void
 		json_event_parser( basic_json_value<P, A> bjv, Handler &&handler ) {
-			json_event_parser( std::move( bjv ), DAW_FWD( handler ),
-			                   options::parse_flags<> );
+			json_event_parser<StackContainerPolicy>(
+			  std::move( bjv ), DAW_FWD( handler ), options::parse_flags<> );
 		}
 
-		template<typename Handler, auto... ParseFlags>
+		template<typename StackContainerPolicy = use_default, typename Handler,
+		         auto... ParseFlags>
 		DAW_ATTRIB_INLINE void
 		json_event_parser( daw::string_view json_document, Handler &&handler,
 		                   options::parse_flags_t<ParseFlags...> pflags ) {
 
-			return json_event_parser( basic_json_value( json_document ),
-			                          DAW_FWD2( Handler, handler ), pflags );
+			return json_event_parser<StackContainerPolicy>(
+			  basic_json_value( json_document ), DAW_FWD2( Handler, handler ),
+			  pflags );
 		}
 
-		template<typename Handler>
+		template<typename StackContainerPolicy = use_default, typename Handler>
 		DAW_ATTRIB_INLINE void json_event_parser( daw::string_view json_document,
 		                                          Handler &&handler ) {
 
-			return json_event_parser( basic_json_value( json_document ),
-			                          DAW_FWD2( Handler, handler ),
-			                          options::parse_flags<> );
+			return json_event_parser<StackContainerPolicy>(
+			  basic_json_value( json_document ), DAW_FWD2( Handler, handler ),
+			  options::parse_flags<> );
 		}
 
 	} // namespace DAW_JSON_VER
